@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Mr. Jadaul</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overscroll-behavior:none}
+body{font-family:'Inter',sans-serif;background:#000;display:flex;justify-content:center;color:#fff}
+#app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden;background:#000}
+
+/* HEADER */
+#hdr{background:#000;padding:0 14px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid #141414}
+#aname{font-family:'Playfair Display',serif;color:#fff;font-size:18px;letter-spacing:.1px}
+#hdrr{display:flex;gap:6px}
+.hbtn{width:33px;height:33px;border-radius:8px;background:#0D0D0D;border:1px solid #1A1A1A;color:#555;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0}
+.hbtn:hover,.hbtn.on{background:#1A1A1A;color:#aaa;border-color:#2A2A2A}
+.hbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* MESSAGES */
+#msgs{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 14px 8px;display:flex;flex-direction:column;gap:16px;-webkit-overflow-scrolling:touch}
+#msgs::-webkit-scrollbar{width:0}
+
+/* AI message */
+.ba{width:100%;padding-bottom:16px;border-bottom:1px solid #0F0F0F}
+.atag{font-size:9px;color:#2A2A2A;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:5px;font-weight:600}
+.atxt{font-size:15.5px;line-height:1.82;color:#D0D0D0;white-space:pre-wrap;word-break:break-word}
+.atxt strong{font-weight:700;color:#fff}
+.atxt code{font-family:monospace;background:#111;padding:2px 6px;border-radius:4px;font-size:13px;color:#A8D8A8}
+
+/* Inline image from AI */
+.ai-img{width:100%;border-radius:12px;margin:10px 0;display:block;cursor:pointer;transition:opacity .2s}
+.ai-img:hover{opacity:.88}
+
+/* Code block */
+.code-block{background:#0A0A0A;border:1px solid #1A1A1A;border-radius:10px;margin:10px 0;overflow:hidden}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid #141414}
+.code-lang{font-size:10px;color:#444;font-family:monospace;letter-spacing:.5px}
+.code-copy{background:transparent;border:none;color:#444;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:4px}
+.code-copy svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+pre{padding:12px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.6;color:#7CB87C}
+
+/* Web badge */
+.web-badge{display:inline-flex;align-items:center;gap:4px;background:#0A140A;border:1px solid #1A3A1A;border-radius:20px;padding:3px 9px;font-size:10px;color:#4CAF50;margin-bottom:10px;font-weight:500}
+.web-badge svg{width:9px;height:9px;fill:none;stroke:#4CAF50;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Message actions */
+.ba-actions{display:flex;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap}
+.act-btn{display:flex;align-items:center;gap:5px;background:transparent;border:1px solid #1A1A1A;border-radius:20px;padding:5px 12px;font-size:11px;color:#444;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.act-btn:hover{background:#0D0D0D;color:#888;border-color:#2A2A2A}
+.act-btn.copied,.act-btn.playing{color:#4CAF50;border-color:#1A3A1A}
+.act-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* User bubble */
+.bu{display:flex;justify-content:flex-end;width:100%}
+.bu-inner{background:#171717;color:#E0E0E0;padding:11px 15px;border-radius:20px 20px 5px 20px;max-width:84%;font-size:15px;line-height:1.55;border:1px solid #202020;word-break:break-word;white-space:pre-wrap}
+.user-img{max-width:220px;border-radius:10px;margin-top:7px;display:block;cursor:pointer}
+
+/* YouTube card */
+.yt-card{display:flex;align-items:center;gap:10px;background:#0D0D0D;border:1px solid #1A1A1A;border-radius:12px;padding:10px 12px;margin:8px 0;text-decoration:none;transition:background .15s}
+.yt-card:hover{background:#141414}
+.yt-thumb{width:64px;height:44px;border-radius:6px;object-fit:cover;flex-shrink:0;background:#111}
+.yt-info{flex:1;min-width:0}
+.yt-title{font-size:12px;color:#C0C0C0;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.yt-tag{font-size:10px;color:#FF4444;margin-top:3px;display:flex;align-items:center;gap:3px}
+.yt-tag svg{width:10px;height:10px;fill:#FF4444;flex-shrink:0}
+
+/* Typing */
+#typing{display:none;padding:6px 0 16px;border-bottom:1px solid #0F0F0F}
+#typing.on{display:flex;align-items:center;gap:9px}
+#typing-label{font-size:11px;color:#2A2A2A}
+.spade-spin{display:inline-block;animation:spadeRot 1.1s linear infinite}
+@keyframes spadeRot{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.min{animation:fadein .25s ease-out both}
+
+/* ─── INPUT BAR ─── */
+#ibar{
+  background:#fff;
+  padding:10px 12px 16px;
+  display:flex;flex-direction:column;
+  gap:0;flex-shrink:0;
+  border-top:1px solid #EBEBEB;
+  box-shadow:0 -4px 20px rgba(0,0,0,.06);
+}
+/* tool strip — shown/hidden by toggle */
+#tool-strip{
+  display:flex;gap:6px;padding:0 2px 10px;
+  overflow:hidden;max-height:0;
+  transition:max-height .22s ease,padding .22s ease,opacity .22s;
+  opacity:0;
+}
+#tool-strip.open{max-height:52px;opacity:1;padding-bottom:10px}
+.ts-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#F5F5F5;border:1px solid #E8E8E8;
+  border-radius:20px;padding:6px 12px;
+  font-size:11.5px;color:#555;cursor:pointer;
+  font-family:'Inter',sans-serif;white-space:nowrap;
+  transition:background .15s,color .15s;
+}
+.ts-btn:hover{background:#EBEBEB;color:#222}
+.ts-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ts-btn.active{background:#111;color:#fff;border-color:#111}
+
+/* img preview above textarea */
+#img-preview{display:none;position:relative;margin-bottom:8px;padding:0 2px}
+#img-preview img{max-height:80px;border-radius:10px;display:block}
+#img-preview-clear{position:absolute;top:-5px;right:-3px;width:20px;height:20px;border-radius:50%;background:#222;border:none;color:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* row: textarea + send */
+#ibar-row{display:flex;gap:9px;align-items:flex-end}
+#iwrap{
+  flex:1;background:#F5F5F5;
+  border-radius:26px;padding:11px 14px;
+  display:flex;align-items:flex-end;gap:0;
+  border:1.5px solid #E8E8E8;
+  transition:border-color .2s,box-shadow .2s;min-width:0;
+}
+#iwrap:focus-within{border-color:#C0C0C0;background:#fff;box-shadow:0 0 0 3px rgba(0,0,0,.04)}
+#mi{
+  flex:1;background:transparent;font-size:16px;
+  color:#111;line-height:1.5;font-family:'Inter',sans-serif;
+  max-height:130px;overflow-y:auto;resize:none;outline:none;border:none;min-width:0;
+}
+#mi::placeholder{color:#AAAAAA;font-size:15px}
+/* toggle icon inside input */
+#tool-toggle-btn{
+  background:transparent;border:none;color:#BBBBBB;
+  cursor:pointer;padding:0 0 0 8px;flex-shrink:0;
+  display:flex;align-items:center;transition:color .15s;
+}
+#tool-toggle-btn:hover{color:#777}
+#tool-toggle-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#tool-toggle-btn.on{color:#111}
+
+#snd{
+  width:46px;height:46px;border-radius:23px;
+  background:#111;border:none;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+  box-shadow:0 2px 10px rgba(0,0,0,.2);
+  transition:transform .12s,opacity .15s;
+}
+#snd:disabled{opacity:.2;cursor:default;box-shadow:none}
+#snd:not(:disabled):active{transform:scale(.88)}
+#snd svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+#file-input{display:none}
+
+/* TOAST */
+#toast{position:absolute;top:64px;left:50%;transform:translateX(-50%);background:#0D0D0D;color:#ff9999;font-size:11px;padding:7px 14px;border-radius:20px;border:1px solid #2A1010;z-index:99;display:none;max-width:92%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#toast.show{display:block;animation:fadeout 4s forwards}
+
+/* PANELS */
+.panel{position:absolute;bottom:0;left:0;right:0;background:#080808;border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -8px 40px rgba(0,0,0,.8);z-index:30;transform:translateY(100%);transition:transform .32s cubic-bezier(.16,1,.3,1);border-top:1px solid #1A1A1A}
+.panel.open{transform:translateY(0)}
+.panel-hdr{padding:13px 15px 11px;border-bottom:1px solid #111;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.panel-title{font-size:12px;font-weight:700;color:#444;letter-spacing:1.2px;text-transform:uppercase}
+.panel-close{background:#111;border:1px solid #1E1E1E;border-radius:7px;width:26px;height:26px;color:#444;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px}
+
+/* THINK */
+#tp{height:52%}
+#agrid{padding:9px 12px;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;flex-shrink:0;border-bottom:1px solid #0D0D0D}
+.agc{background:#080808;border:1px solid #111;border-radius:9px;padding:6px 3px;text-align:center;transition:all .2s}
+.agc.active{background:#141414;border-color:#2A2A2A}
+.agc.done{background:#0A140A;border-color:#143314}
+.agci{font-size:12px;display:block;margin-bottom:2px}
+.agc.active .agci{animation:pop .65s ease-in-out infinite}
+.agcn{font-size:8px;color:#222;transition:color .2s}
+.agc.active .agcn{color:#555}
+.agc.done .agcn{color:#4CAF50}
+#logs{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:3px}
+#lempty{color:#1A1A1A;font-size:12px;text-align:center;margin-top:18px}
+.lr{display:flex;gap:6px;font-size:9.5px;line-height:1.5;padding:3px 0;border-bottom:1px solid #0A0A0A}
+.lt{color:#1E1E1E;min-width:52px;font-family:monospace;font-size:9px;flex-shrink:0}
+.la{color:#4CAF50;min-width:76px;font-weight:700;flex-shrink:0}
+.lc{color:#3A3A3A}
+.ld{color:#222;font-size:9px}
+
+/* SETTINGS */
+#sp{height:90%}
+#sp-body{flex:1;overflow-y:auto;padding:14px}
+.s-sec{margin-bottom:20px}
+.s-sec-title{font-size:10px;color:#2A2A2A;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #0F0F0F}
+.s-item{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#0D0D0D;border:1px solid #141414;border-radius:11px;margin-bottom:7px;gap:10px}
+.s-item-l{flex:1;min-width:0}
+.s-item-title{font-size:13px;color:#B0B0B0;font-weight:500}
+.s-item-sub{font-size:11px;color:#333;margin-top:2px}
+.s-toggle{width:40px;height:22px;background:#1A1A1A;border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none}
+.s-toggle.on{background:#2A6B2A}
+.s-toggle::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.s-toggle.on::after{transform:translateX(18px)}
+.s-btn{background:#111;border:1px solid #1E1E1E;border-radius:9px;padding:8px 14px;color:#777;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap}
+.s-btn:hover{background:#1A1A1A;color:#bbb}
+.s-btn.danger{color:#FF5252;border-color:#1A0A0A}
+.s-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.s-tool-btn{background:#0D0D0D;border:1px solid #141414;border-radius:12px;padding:14px 12px;color:#888;font-size:12.5px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;text-align:left;transition:all .15s}
+.s-tool-btn:hover{background:#141414;color:#ccc;border-color:#222}
+.s-tool-btn svg{width:15px;height:15px;fill:none;stroke:#555;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* MEMORY */
+#memp{height:82%}
+#mem-body{flex:1;overflow-y:auto;padding:12px}
+.mem-item{background:#0D0D0D;border:1px solid #141414;border-radius:10px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px}
+.mem-text{flex:1;font-size:13px;color:#A0A0A0;line-height:1.5}
+.mem-del{background:transparent;border:none;color:#2A2A2A;cursor:pointer;padding:2px;flex-shrink:0;transition:color .15s}
+.mem-del:hover{color:#FF5252}
+.mem-del svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mem-add-row{display:flex;gap:8px;margin-top:10px}
+.mem-add-input{flex:1;background:#0D0D0D;border:1px solid #1A1A1A;border-radius:9px;padding:10px 13px;font-size:13px;color:#D0D0D0;font-family:'Inter',sans-serif;outline:none}
+.mem-add-btn{background:#fff;border:none;border-radius:9px;padding:10px 16px;color:#000;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* PHOTO LIBRARY */
+#photop{height:85%}
+#photo-grid{flex:1;overflow-y:auto;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.photo-item{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1;background:#111;cursor:pointer}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
+.photo-item:hover img{opacity:.85}
+.photo-actions{position:absolute;bottom:0;left:0;right:0;display:flex;gap:4px;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.pa-btn{flex:1;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:#fff;font-size:10px;cursor:pointer;padding:5px;display:flex;align-items:center;justify-content:center;gap:3px;font-family:'Inter',sans-serif;backdrop-filter:blur(4px)}
+.pa-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#photo-empty{grid-column:1/-1;text-align:center;color:#222;font-size:13px;margin-top:40px}
+
+/* CODE SNIPPETS */
+#codep{height:82%}
+#code-list{flex:1;overflow-y:auto;padding:12px}
+.snippet-item{background:#0D0D0D;border:1px solid #141414;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.snippet-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:1px solid #111}
+.snippet-name{font-size:12px;color:#777;font-weight:500}
+.snippet-lang{font-size:10px;color:#2A2A2A;font-family:monospace}
+.snippet-actions{display:flex;gap:6px}
+.snip-btn{background:transparent;border:none;color:#2A2A2A;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;font-family:'Inter',sans-serif;transition:color .15s}
+.snip-btn:hover{color:#888}
+.snip-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.snippet-code{padding:10px 13px;font-family:monospace;font-size:11px;color:#5A8A5A;line-height:1.5;max-height:90px;overflow:hidden}
+#code-empty{text-align:center;color:#222;font-size:13px;margin-top:40px}
+
+/* CONVERSATIONS */
+#convp{height:85%}
+#conv-list{flex:1;overflow-y:auto;padding:12px}
+.conv-item{background:#0D0D0D;border:1px solid #141414;border-radius:10px;padding:12px 13px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+.conv-item:hover{background:#111}
+.conv-q{font-size:13px;color:#A0A0A0;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.conv-a{font-size:11px;color:#333;margin-top:5px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.conv-time{font-size:10px;color:#222;margin-top:5px}
+#conv-empty{text-align:center;color:#222;font-size:13px;margin-top:40px}
+
+/* FULL IMAGE VIEWER */
+#img-viewer{position:absolute;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
+#img-viewer.open{display:flex}
+#iv-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 15px;border-bottom:1px solid #111;flex-shrink:0}
+#iv-title{font-size:13px;color:#666;font-weight:500}
+#iv-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px}
+#iv-img{max-width:100%;max-height:100%;border-radius:12px;object-fit:contain}
+#iv-actions{display:flex;gap:8px;padding:14px;flex-shrink:0;border-top:1px solid #111}
+.iv-btn{flex:1;background:#111;border:1px solid #1A1A1A;border-radius:11px;padding:12px;color:#aaa;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.iv-btn:hover{background:#1A1A1A;color:#fff}
+.iv-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* IMAGE EDIT PANEL */
+#img-edit-panel{position:absolute;inset:0;background:#050505;z-index:45;display:none;flex-direction:column;padding:18px 15px;gap:13px}
+#img-edit-panel.open{display:flex}
+#ep-hdr{display:flex;align-items:center;justify-content:space-between}
+#ep-title{font-size:14px;font-weight:600;color:#666}
+#ep-close{background:transparent;border:none;color:#333;cursor:pointer;font-size:17px}
+#edit-preview{max-height:200px;border-radius:12px;object-fit:contain;align-self:center;border:1px solid #1A1A1A}
+#edit-prompt{background:#0D0D0D;border:1.5px solid #1A1A1A;border-radius:11px;padding:12px 14px;font-size:14px;color:#D0D0D0;font-family:'Inter',sans-serif;outline:none;resize:none;height:90px;transition:border-color .2s}
+#edit-prompt:focus{border-color:#2A2A2A}
+#ep-gen-btn{background:#fff;border:none;border-radius:11px;padding:14px;color:#000;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+#ep-cancel{background:transparent;border:1px solid #1A1A1A;border-radius:11px;padding:12px;color:#444;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* OVERLAY */
+.overlay-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:25;display:none;backdrop-filter:blur(3px)}
+.overlay-bg.open{display:block}
+
+/* NEW CHAT */
+#nc-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:35;display:none}
+#nc-bg.open{display:block}
+#nc-wrap{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:36}
+#nc-wrap.open{display:flex}
+#nc-box{background:#0D0D0D;border:1px solid #1A1A1A;border-radius:18px;padding:22px 20px;width:250px;display:flex;flex-direction:column;gap:12px;box-shadow:0 16px 48px rgba(0,0,0,.7)}
+.nc-title{font-size:15px;font-weight:600;color:#fff;text-align:center}
+.nc-sub{font-size:12px;color:#333;text-align:center}
+.nc-confirm{background:#fff;border:none;border-radius:11px;padding:11px;color:#000;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.nc-cancel{background:transparent;border:1px solid #1A1A1A;border-radius:11px;padding:10px;color:#444;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif}
+
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.15);border-top-color:#fff;border-radius:50%;animation:spinner .7s linear infinite}
+.spd{border-color:rgba(0,0,0,.08);border-top-color:#aaa}
+
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes spinner{to{transform:rotate(360deg)}}
+@keyframes fadeout{0%,60%{opacity:1}100%{opacity:0}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="toast"></div>
+  <input type="file" id="file-input" accept="image/*"/>
+
+  <!-- HEADER -->
+  <div id="hdr">
+    <div id="aname">Mr. Jadaul</div>
+    <div id="hdrr">
+      <button class="hbtn" onclick="openNC()" title="New chat">
+        <svg viewBox="0 0 24 24"><path d="M12 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg>
+      </button>
+      <button class="hbtn" onclick="openPanel('sp')" title="Settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div id="msgs">
+    <div class="ba min">
+      <div class="atag">Mr. Jadaul</div>
+      <div class="atxt">what's good</div>
+      <div class="ba-actions">
+        <button class="act-btn" onclick="copyText(this,`what's good`)"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+        <button class="act-btn" onclick="speak(this,`what's good`)"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>Listen</button>
+      </div>
+    </div>
+    <div id="typing">
+      <svg class="spade-spin" viewBox="0 0 24 24" width="13" height="13" fill="#2A2A2A">
+        <path d="M12 2C9 6 4 8 4 12a4 4 0 0 0 7 2.6V17H9v2h6v-2h-2v-2.4A4 4 0 0 0 20 12C20 8 15 6 12 2z"/>
+      </svg>
+      <span id="typing-label">thinking...</span>
+    </div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <div id="ibar">
+    <!-- Tool strip (toggled) -->
+    <div id="tool-strip">
+      <button class="ts-btn" onclick="document.getElementById('file-input').click()">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Image
+      </button>
+      <button class="ts-btn" id="mic-ts" onclick="toggleVoice()">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        Voice
+      </button>
+      <button class="ts-btn" onclick="closePanel('sp');openPanel('photop')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Photos
+      </button>
+      <button class="ts-btn" onclick="openPanel('convp')">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        History
+      </button>
+    </div>
+
+    <!-- Image preview -->
+    <div id="img-preview">
+      <img id="img-preview-img" src="" alt=""/>
+      <button id="img-preview-clear" onclick="clearImg()">✕</button>
+    </div>
+
+    <!-- Textarea row -->
+    <div id="ibar-row">
+      <div id="iwrap">
+        <textarea id="mi" rows="1" placeholder="Talk to Mr. Jadaul..."></textarea>
+        <button id="tool-toggle-btn" onclick="toggleToolStrip()" title="Tools">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <button id="snd" onclick="send()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- OVERLAY -->
+  <div class="overlay-bg" id="overlay-bg" onclick="closeAllPanels()"></div>
+
+  <!-- THINK PANEL -->
+  <div class="panel" id="tp" style="height:52%">
+    <div class="panel-hdr">
+      <div class="panel-title">Deep Thinking</div>
+      <button class="panel-close" onclick="closePanel('tp')">✕</button>
+    </div>
+    <div id="agrid">
+      <div class="agc" id="ag1"><span class="agci">🚪</span><span class="agcn">Gate</span></div>
+      <div class="agc" id="ag2"><span class="agci">🔍</span><span class="agcn">Cache</span></div>
+      <div class="agc" id="ag3"><span class="agci">🧠</span><span class="agcn">Intent</span></div>
+      <div class="agc" id="ag4"><span class="agci">🌐</span><span class="agcn">Web</span></div>
+      <div class="agc" id="ag5"><span class="agci">🖼️</span><span class="agcn">Vision</span></div>
+      <div class="agc" id="ag6"><span class="agci">✍️</span><span class="agcn">Writer</span></div>
+      <div class="agc" id="ag7"><span class="agci">✅</span><span class="agcn">Quality</span></div>
+      <div class="agc" id="ag8"><span class="agci">💾</span><span class="agcn">Memory</span></div>
+      <div class="agc" id="ag9"><span class="agci">🛡️</span><span class="agcn">Shield</span></div>
+      <div class="agc" id="ag10"><span class="agci">📤</span><span class="agcn">Blind</span></div>
+    </div>
+    <div id="logs"><div id="lempty">Send a message to watch agents work</div></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="panel" id="sp" style="height:90%">
+    <div class="panel-hdr">
+      <div class="panel-title">Settings</div>
+      <button class="panel-close" onclick="closePanel('sp')">✕</button>
+    </div>
+    <div id="sp-body">
+      <div class="s-sec">
+        <div class="s-sec-title">Tools</div>
+        <div class="s-grid">
+          <button class="s-tool-btn" onclick="closePanel('sp');openPanel('photop')">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo Library
+          </button>
+          <button class="s-tool-btn" onclick="closePanel('sp');openPanel('codep')">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Code Snippets
+          </button>
+          <button class="s-tool-btn" onclick="closePanel('sp');openPanel('memp')">
+            <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Memory
+          </button>
+          <button class="s-tool-btn" onclick="closePanel('sp');openPanel('convp')">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Conversations
+          </button>
+          <button class="s-tool-btn" onclick="closePanel('sp');togglePanel('tp')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Deep Thinking
+          </button>
+          <button class="s-tool-btn" onclick="closePanel('sp');openImageEditDirect()">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit Image
+          </button>
+        </div>
+      </div>
+      <div class="s-sec">
+        <div class="s-sec-title">AI</div>
+        <div class="s-item">
+          <div class="s-item-l"><div class="s-item-title">Web Search</div><div class="s-item-sub">Browse internet for answers</div></div>
+          <button class="s-toggle on" id="websearch-toggle" onclick="toggleSetting('websearch')"></button>
+        </div>
+        <div class="s-item">
+          <div class="s-item-l"><div class="s-item-title">Memory</div><div class="s-item-sub">Remember things about you</div></div>
+          <button class="s-toggle on" id="memory-toggle" onclick="toggleSetting('memory')"></button>
+        </div>
+      </div>
+      <div class="s-sec">
+        <div class="s-sec-title">Data</div>
+        <div class="s-item"><div class="s-item-l"><div class="s-item-title">Clear Cache</div></div><button class="s-btn" onclick="clearCache()">Clear</button></div>
+        <div class="s-item"><div class="s-item-l"><div class="s-item-title">Clear Photos</div></div><button class="s-btn danger" onclick="clearPhotos()">Clear</button></div>
+        <div class="s-item"><div class="s-item-l"><div class="s-item-title">Clear Memory</div></div><button class="s-btn danger" onclick="clearAllMemory()">Clear</button></div>
+      </div>
+      <div class="s-sec">
+        <div class="s-sec-title">About</div>
+        <div class="s-item"><div class="s-item-l"><div class="s-item-title">Mr. Jadaul</div><div class="s-item-sub">Henry Tallen · CEO · World Of Discoveries (WOD)</div></div></div>
+        <div class="s-item"><div class="s-item-l"><div class="s-item-title">Powered by</div><div class="s-item-sub">Groq llama-3.1-8b-instant · Pollinations.ai · Serper · Firebase</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMORY -->
+  <div class="panel" id="memp" style="height:82%">
+    <div class="panel-hdr"><div class="panel-title">Memory</div><button class="panel-close" onclick="closePanel('memp')">✕</button></div>
+    <div id="mem-body">
+      <div id="mem-list"></div>
+      <div class="mem-add-row">
+        <input class="mem-add-input" id="mem-add-input" placeholder="Add memory manually..."/>
+        <button class="mem-add-btn" onclick="addMemoryManual()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHOTO LIBRARY -->
+  <div class="panel" id="photop" style="height:85%">
+    <div class="panel-hdr"><div class="panel-title">Photo Library</div><button class="panel-close" onclick="closePanel('photop')">✕</button></div>
+    <div id="photo-grid"><div id="photo-empty">No images yet — generate or send images to save them here.</div></div>
+  </div>
+
+  <!-- CODE SNIPPETS -->
+  <div class="panel" id="codep" style="height:82%">
+    <div class="panel-hdr"><div class="panel-title">Code Snippets</div><button class="panel-close" onclick="closePanel('codep')">✕</button></div>
+    <div id="code-list"><div id="code-empty">No snippets yet. Ask Mr. Jadaul to write code.</div></div>
+  </div>
+
+  <!-- CONVERSATIONS -->
+  <div class="panel" id="convp" style="height:85%">
+    <div class="panel-hdr"><div class="panel-title">Previous Conversations</div><button class="panel-close" onclick="closePanel('convp')">✕</button></div>
+    <div id="conv-list"><div id="conv-empty">No conversations yet.</div></div>
+  </div>
+
+  <!-- FULL IMAGE VIEWER -->
+  <div id="img-viewer">
+    <div id="iv-hdr">
+      <div id="iv-title">Image</div>
+      <button onclick="closeViewer()" style="background:transparent;border:none;color:#444;font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div id="iv-img-wrap"><img id="iv-img" src="" alt=""/></div>
+    <div id="iv-actions">
+      <button class="iv-btn" onclick="downloadImg()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download
+      </button>
+      <button class="iv-btn" onclick="editImageFromViewer()">
+        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit with AI
+      </button>
+      <button class="iv-btn" onclick="shareImg()">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+
+  <!-- IMAGE EDIT PANEL -->
+  <div id="img-edit-panel">
+    <div id="ep-hdr">
+      <div id="ep-title">Edit Image with AI</div>
+      <button id="ep-close" onclick="closeEdit()">✕</button>
+    </div>
+    <img id="edit-preview" src="" alt=""/>
+    <textarea id="edit-prompt" placeholder="Describe what to change — 'make the background a sunset', 'add rain', 'change to black and white'..."></textarea>
+    <button id="ep-gen-btn" onclick="doImageEdit()">Generate Edit</button>
+    <button id="ep-cancel" onclick="closeEdit()">Cancel</button>
+  </div>
+
+  <!-- NEW CHAT -->
+  <div id="nc-bg" onclick="closeNC()"></div>
+  <div id="nc-wrap">
+    <div id="nc-box">
+      <div class="nc-title">Start New Chat?</div>
+      <div class="nc-sub">Current conversation will be cleared.</div>
+      <button class="nc-confirm" onclick="confirmNewChat()">Start Fresh</button>
+      <button class="nc-cancel" onclick="closeNC()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   Mr. Jadaul · Social AI Companion
+   Henry Tallen · CEO · World Of Discoveries
+   Groq (llama-3.1-8b-instant) + Pollinations + Serper + Firebase
+═══════════════════════════════════════════ */
+const FB_DATA   = "https://zee-chat-8eec7-default-rtdb.firebaseio.com";
+const FB_CONFIG = "https://zedbangers-86dad-default-rtdb.firebaseio.com";
+const SERPER    = "fe3ed70e6001d2e9f876350fb6c46c4a0c7727ef";
+
+let keys=[], kidx=0, busy=false, hist=[], zmem={};
+let mdl="llama-3.1-8b-instant";
+let sysprompt="",behavior="",respStyle="",codebooks="",psybooks="";
+let pendingImg=null, pendingImgB64=null;
+let settings={autoread:false,websearch:true,memory:true,speed:1.0};
+let recognition=null, isRecording=false, currentAudio=null;
+let photoLib=[], codeLib=[], convLib=[];
+let openPanelId=null, editingSrc="", currentViewImg="";
+let toolStripOpen=false;
+
+const $   = id=>document.getElementById(id);
+const esc = t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const nap = ms=>new Promise(r=>setTimeout(r,ms));
+const clk = ()=>new Date().toLocaleTimeString("en",{hour12:false});
+const now = ()=>new Date().toLocaleString("en",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit",hour12:true});
+
+/* ── FIREBASE ── */
+async function fbFetch(url,opts){
+  try{
+    const r=await fetch(url,opts);
+    const text=await r.text();
+    if(text.includes("Host not in allowlist")||text.includes("Permission denied")) return null;
+    try{return JSON.parse(text);}catch{return null;}
+  }catch{return null;}
+}
+const fbGet  = async(p,c=false)=>fbFetch(`${c?FB_CONFIG:FB_DATA}/${p}.json`);
+const fbSet  = async(p,d,c=false)=>fbFetch(`${c?FB_CONFIG:FB_DATA}/${p}.json`,{method:"PUT",body:JSON.stringify(d)});
+const fbPush = async(p,d,c=false)=>fbFetch(`${c?FB_CONFIG:FB_DATA}/${p}.json`,{method:"POST",body:JSON.stringify({...d,ts:Date.now()})});
+const fbDel  = async(p,c=false)=>fbFetch(`${c?FB_CONFIG:FB_DATA}/${p}.json`,{method:"DELETE"});
+
+/* ── GROQ ── */
+async function groq(msgs,tok=900){
+  if(!keys.length) throw new Error("No API keys — open Settings to add your Groq key");
+  const key=keys[kidx%keys.length];
+  const r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":`Bearer ${key}`},
+    body:JSON.stringify({model:mdl,messages:msgs,max_tokens:tok})
+  });
+  if(!r.ok){kidx++;const e=await r.json().catch(()=>({}));throw new Error(e?.error?.message||`Groq HTTP ${r.status}`);}
+  return (await r.json()).choices?.[0]?.message?.content||"";
+}
+
+/* ── IMAGE READING — Groq vision primary ── */
+async function readImage(b64,mime,prompt){
+  const models=["meta-llama/llama-4-scout-17b-16e-instruct","llama-3.2-11b-vision-preview","llama-3.2-90b-vision-preview"];
+  if(keys.length){
+    const key=keys[kidx%keys.length];
+    for(const model of models){
+      try{
+        const r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+          method:"POST",
+          headers:{"Content-Type":"application/json","Authorization":`Bearer ${key}`},
+          body:JSON.stringify({model,messages:[{role:"user",content:[
+            {type:"image_url",image_url:{url:`data:${mime};base64,${b64}`}},
+            {type:"text",text:prompt||"Describe everything you see in this image accurately and in full detail — people, objects, text, colors, setting, actions."}
+          ]}],max_tokens:900})
+        });
+        if(r.ok){const d=await r.json();const txt=d.choices?.[0]?.message?.content||"";if(txt.length>15){log("🖼️ Vision",`${model} ✅`);return txt;}}
+      }catch{}
+    }
+  }
+  // Pollinations fallback
+  try{
+    const r=await fetch("https://text.pollinations.ai/openai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"openai",messages:[{role:"user",content:[{type:"image_url",image_url:{url:`data:${mime};base64,${b64}`}},{type:"text",text:prompt||"Describe this image accurately."}]}],max_tokens:900})});
+    if(r.ok){const d=await r.json();const txt=d.choices?.[0]?.message?.content||"";if(txt.length>15){log("🖼️ Vision","Pollinations fallback ✅");return txt;}}
+  }catch{}
+  throw new Error("Image reading failed on all services");
+}
+
+/* ── IMAGE GENERATION ── */
+async function genImage(prompt){
+  const clean=prompt.replace(/\b(generate|create|make|draw|design|paint|show me|imagine|picture of|image of|photo of|can you|please)\b/gi,"").replace(/\s+/g," ").trim();
+  const seed=Math.floor(Math.random()*99999);
+  const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(clean)}?width=768&height=768&nologo=true&seed=${seed}`;
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>res(url);
+    img.onerror=()=>{
+      const url2=`https://image.pollinations.ai/prompt/${encodeURIComponent(clean)}`;
+      const img2=new Image();
+      img2.onload=()=>res(url2);
+      img2.onerror=()=>rej(new Error("Image generation failed"));
+      img2.src=url2;
+    };
+    img.src=url;
+    setTimeout(()=>rej(new Error("Generation timed out")),35000);
+  });
+}
+
+/* ── WEB SEARCH ── */
+async function webSearch(query){
+  try{
+    const [wr,vr]=await Promise.all([
+      fetch("https://google.serper.dev/search",{method:"POST",headers:{"Content-Type":"application/json","X-API-KEY":SERPER},body:JSON.stringify({q:query,num:10,gl:"us",hl:"en"})}),
+      fetch("https://google.serper.dev/videos",{method:"POST",headers:{"Content-Type":"application/json","X-API-KEY":SERPER},body:JSON.stringify({q:query+" youtube",num:3})})
+    ]);
+    const d=await wr.json(), vd=await vr.json().catch(()=>({}));
+    const parts=[];
+    if(d.answerBox?.answer)    parts.push(`DIRECT ANSWER: ${d.answerBox.answer}`);
+    if(d.answerBox?.snippet)   parts.push(`DETAIL: ${d.answerBox.snippet}`);
+    if(d.knowledgeGraph?.title){let kg=`[${d.knowledgeGraph.title}]`;if(d.knowledgeGraph.description)kg+=`: ${d.knowledgeGraph.description}`;if(d.knowledgeGraph.attributes)Object.entries(d.knowledgeGraph.attributes).slice(0,5).forEach(([k,v])=>kg+=`\n  ${k}: ${v}`);parts.push(kg);}
+    (d.organic||[]).slice(0,6).forEach(x=>{if(x.snippet)parts.push(`[${x.title}]: ${x.snippet}`);});
+    (d.peopleAlsoAsk||[]).slice(0,3).forEach(x=>{if(x.answer)parts.push(`Q: ${x.question}\nA: ${x.answer}`);});
+    const ytLinks=[];
+    (vd.videos||[]).slice(0,2).forEach(v=>{if(v.link?.includes("youtube"))ytLinks.push({title:v.title,url:v.link,thumb:v.imageUrl||""});});
+    (d.organic||[]).forEach(x=>{if(x.link?.includes("youtube.com/watch")&&ytLinks.length<3)ytLinks.push({title:x.title,url:x.link,thumb:""});});
+    return {text:parts.join("\n\n"),ytLinks};
+  }catch(e){log("🌐 Web","Error",e.message?.substring(0,50));return {text:"",ytLinks:[]};}
+}
+
+async function shouldSearch(msg){
+  try{
+    const raw=await groq([
+      {role:"system",content:`Decide if web search is needed. Return ONLY JSON: {"needs_web":true/false,"query":"optimized query"}
+Search: current events, prices, recent news, people's roles, live data, specific facts you may not know.
+Don't search: coding help, general conversation, math, opinions, established history.`},
+      {role:"user",content:msg}
+    ],120);
+    return JSON.parse(raw.replace(/```json|```/g,"").trim());
+  }catch{return {needs_web:false,query:msg};}
+}
+
+/* ── AGENTS ── */
+function ag(id,st){const a=$(`ag${id}`);if(a)a.className=`agc${st?" "+st:""}`;}
+function resetAg(){for(let i=1;i<=10;i++)ag(i,"");}
+
+/* ── LOGS ── */
+function log(agent,act,det){
+  $("lempty").style.display="none";
+  const s=$("logs"),r=document.createElement("div");
+  r.className="lr";
+  r.innerHTML=`<span class="lt">${clk()}</span><span class="la">${agent}</span><span class="lc">${act}</span>${det?`<span class="ld">→ ${det}</span>`:""}`;
+  s.appendChild(r);s.scrollTop=s.scrollHeight;
+}
+
+/* ── FORMAT TEXT ── */
+function fmt(text){
+  let t=text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  t=t.replace(/```(\w*)\n?([\s\S]*?)```/g,(m,lang,code)=>{
+    const l=lang||"code";
+    saveCodeSnippet(l,code.trim());
+    return `<div class="code-block"><div class="code-hdr"><span class="code-lang">${l}</span><button class="code-copy" onclick="copyText(this,decodeURIComponent('${encodeURIComponent(code.trim())}'))"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><pre>${esc(code.trim())}</pre></div>`;
+  });
+  t=t.replace(/`([^`]+)`/g,"<code>$1</code>");
+  t=t.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+  t=t.replace(/\n/g,"<br>");
+  return t;
+}
+
+/* ── YOUTUBE CARD ── */
+function ytCard(v){
+  return `<a href="${v.url}" target="_blank" rel="noopener" class="yt-card">
+    ${v.thumb?`<img class="yt-thumb" src="${v.thumb}" onerror="this.style.display='none'" alt=""/>`:`<div class="yt-thumb" style="display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FF4444"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.77 0 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.79a4.85 4.85 0 0 1-1.01-.1z"/></svg></div>`}
+    <div class="yt-info">
+      <div class="yt-title">${esc(v.title||"YouTube Video")}</div>
+      <div class="yt-tag"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#fff"/></svg>Watch on YouTube</div>
+    </div>
+  </a>`;
+}
+
+/* ── MESSAGES ── */
+function addMsg(role,text,usedWeb=false,imgUrl=null,userImg=null,ytLinks=[]){
+  const m=$("msgs"),typ=$("typing"),d=document.createElement("div");
+  d.className="min";
+  if(role==="user"){
+    d.className+=" bu";
+    let inner=`<div class="bu-inner">${esc(text).replace(/\n/g,"<br>")}`;
+    if(userImg) inner+=`<br><img class="user-img" src="${userImg}" onclick="viewImg('${userImg}')" alt=""/>`;
+    inner+=`</div>`;
+    d.innerHTML=inner;
+  } else {
+    d.className+=" ba";
+    const plain=text.replace(/\*\*/g,"").replace(/```[\s\S]*?```/g,"[code]").replace(/`[^`]+`/g,"").replace(/<[^>]+>/g,"");
+    const webBadge=usedWeb?`<div class="web-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Searched the web</div>`:"";
+    let imgHtml="";
+    if(imgUrl){imgHtml=`<img class="ai-img" src="${imgUrl}" onclick="viewImg('${imgUrl}')" alt="generated"/>`;savePhoto(imgUrl);}
+    const ytHtml=ytLinks?.length?`<div style="margin-top:8px">${ytLinks.map(ytCard).join("")}</div>`:"";
+    d.innerHTML=`
+      <div class="atag">Mr. Jadaul</div>
+      ${webBadge}${imgHtml}
+      <div class="atxt">${fmt(text)}</div>
+      ${ytHtml}
+      <div class="ba-actions">
+        <button class="act-btn" onclick="copyText(this,${JSON.stringify(plain)})"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+        <button class="act-btn" onclick="speak(this,${JSON.stringify(plain)})"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>Listen</button>
+        ${imgUrl?`<button class="act-btn" onclick="viewImg('${imgUrl}')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>View</button>`:""}
+      </div>`;
+    if(settings.autoread) speak(null,plain);
+  }
+  m.insertBefore(d,typ);
+  setTimeout(()=>{m.scrollTop=m.scrollHeight;},60);
+}
+
+function showTyp(v,label="thinking..."){
+  $("typing").classList.toggle("on",v);
+  $("typing-label").textContent=label;
+  if(v) setTimeout(()=>{$("msgs").scrollTop=$("msgs").scrollHeight;},60);
+}
+
+/* ── TTS ── */
+async function speak(btn,text){
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  window.speechSynthesis?.cancel();
+  if(btn?.classList.contains("playing")){resetBtn(btn);return;}
+  if(btn){btn.classList.add("playing");btn.innerHTML=`<span class="spin"></span> Playing...`;}
+  const clean=text.replace(/[^\w\s.,!?'-]/g," ").substring(0,600);
+  const ttsUrl=`https://text.pollinations.ai/${encodeURIComponent(clean)}?model=openai-audio&voice=nova`;
+  try{
+    const audio=new Audio(ttsUrl);
+    currentAudio=audio;
+    audio.playbackRate=settings.speed||1;
+    await new Promise((res,rej)=>{audio.oncanplaythrough=res;audio.onerror=rej;setTimeout(rej,10000);audio.load();});
+    audio.play();
+    audio.onended=()=>{currentAudio=null;resetBtn(btn);};
+    audio.onerror=()=>{currentAudio=null;browserSpeak(btn,text);};
+  }catch{browserSpeak(btn,text);}
+}
+function resetBtn(btn){if(btn){btn.classList.remove("playing");btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>Listen`;}}
+function browserSpeak(btn,text){
+  const u=new SpeechSynthesisUtterance(text);u.rate=settings.speed||1;u.lang="en-US";
+  const v=speechSynthesis.getVoices().find(v=>v.name.includes("Google UK English Female")||v.name.includes("Google US English")||v.name.includes("Samantha")||(!v.localService&&v.lang==="en-US"));
+  if(v)u.voice=v;u.onend=()=>resetBtn(btn);window.speechSynthesis.speak(u);
+}
+
+/* ── VOICE INPUT ── */
+function toggleVoice(){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){showToast("Voice not supported on this browser");return;}
+  if(isRecording){recognition?.stop();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();recognition.lang="en-US";recognition.continuous=false;recognition.interimResults=false;
+  recognition.onstart=()=>{isRecording=true;$("mic-ts")?.classList.add("active");}
+  recognition.onresult=e=>{$("mi").value=e.results[0][0].transcript;$("mi").dispatchEvent(new Event("input"));}
+  recognition.onend=()=>{isRecording=false;$("mic-ts")?.classList.remove("active");}
+  recognition.onerror=e=>{showToast("Voice: "+e.error);isRecording=false;$("mic-ts")?.classList.remove("active");}
+  recognition.start();
+}
+
+/* ── TOOL STRIP TOGGLE ── */
+function toggleToolStrip(){
+  toolStripOpen=!toolStripOpen;
+  $("tool-strip").classList.toggle("open",toolStripOpen);
+  $("tool-toggle-btn").classList.toggle("on",toolStripOpen);
+  // rotate icon
+  $("tool-toggle-btn").querySelector("svg").style.transform=toolStripOpen?"rotate(45deg)":"rotate(0deg)";
+}
+
+/* ── IMAGE ATTACH ── */
+$("file-input").addEventListener("change",function(){
+  const file=this.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    pendingImg=file.type;pendingImgB64=e.target.result.split(",")[1];
+    $("img-preview-img").src=e.target.result;$("img-preview").style.display="block";
+    // open tool strip if closed so user sees the preview
+  };
+  reader.readAsDataURL(file);this.value="";
+});
+function clearImg(){pendingImg=null;pendingImgB64=null;$("img-preview").style.display="none";$("img-preview-img").src="";}
+
+/* ── COPY ── */
+function copyText(btn,text){
+  const done=()=>{if(btn){btn.classList.add("copied");const o=btn.innerHTML;btn.innerHTML=`<svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><polyline points="20 6 9 17 4 12"/></svg>Copied`;setTimeout(()=>{btn.classList.remove("copied");btn.innerHTML=o;},2000);}};
+  navigator.clipboard.writeText(text).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done();});
+}
+
+/* ── TOAST ── */
+function showToast(msg){const t=$("toast");t.textContent="⚠️ "+msg.substring(0,80);t.className="show";setTimeout(()=>t.className="",4500);}
+
+/* ── IMAGE VIEWER ── */
+function viewImg(url){currentViewImg=url;$("iv-img").src=url;$("img-viewer").classList.add("open");}
+function closeViewer(){$("img-viewer").classList.remove("open");currentViewImg="";}
+function downloadImg(){
+  if(!currentViewImg)return;
+  // Create a temporary link and force download
+  const a=document.createElement("a");
+  a.href=currentViewImg;
+  a.download=`mr-jadaul-${Date.now()}.jpg`;
+  a.target="_blank";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+function shareImg(){
+  if(navigator.share&&currentViewImg){
+    navigator.share({title:"Mr. Jadaul Image",url:currentViewImg}).catch(()=>{});
+  } else {
+    copyText(null,currentViewImg);showToast("Image URL copied to clipboard");
+  }
+}
+function editImageFromViewer(){closeViewer();editingSrc=currentViewImg;$("edit-preview").src=editingSrc;$("img-edit-panel").classList.add("open");}
+function openImageEditDirect(){
+  if(photoLib.length){editingSrc=photoLib[0];$("edit-preview").src=editingSrc;$("img-edit-panel").classList.add("open");}
+  else showToast("Generate or send an image first");
+}
+function closeEdit(){$("img-edit-panel").classList.remove("open");}
+async function doImageEdit(){
+  const prompt=$("edit-prompt").value.trim();
+  if(!prompt){showToast("Describe what to change");return;}
+  closeEdit();showTyp(true,"generating edit...");
+  try{
+    const url=await genImage(prompt);
+    showTyp(false);
+    const reply=`yeah, here it is — "${prompt}"`;
+    addMsg("assistant",reply,false,url);
+    hist.push({role:"assistant",content:`Generated image edit: ${prompt}`});
+  }catch(e){showTyp(false);showToast("Edit failed: "+e.message);}
+}
+
+/* ── PHOTO LIBRARY ── */
+function savePhoto(url){if(!photoLib.includes(url)){photoLib.unshift(url);try{localStorage.setItem("jd_photos",JSON.stringify(photoLib.slice(0,60)));}catch{}renderPhotos();}}
+function renderPhotos(){
+  const g=$("photo-grid");
+  const empty=$("photo-empty");
+  Array.from(g.querySelectorAll(".photo-item")).forEach(x=>x.remove());
+  if(!photoLib.length){empty.style.display="block";return;}
+  empty.style.display="none";
+  photoLib.forEach((url,i)=>{
+    const div=document.createElement("div");div.className="photo-item";
+    div.innerHTML=`
+      <img src="${url}" loading="lazy" alt="" onclick="viewImg('${url}')"/>
+      <div class="photo-actions">
+        <button class="pa-btn" onclick="event.stopPropagation();dlPhoto('${url}')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+        <button class="pa-btn" onclick="event.stopPropagation();editPhotoAt(${i})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="pa-btn" onclick="event.stopPropagation();deletePhoto(${i})" style="color:#FF5252"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+      </div>`;
+    g.appendChild(div);
+  });
+}
+function dlPhoto(url){const a=document.createElement("a");a.href=url;a.download=`mr-jadaul-${Date.now()}.jpg`;a.target="_blank";document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function editPhotoAt(i){editingSrc=photoLib[i];$("edit-preview").src=editingSrc;closePanel("photop");$("img-edit-panel").classList.add("open");}
+function deletePhoto(i){photoLib.splice(i,1);try{localStorage.setItem("jd_photos",JSON.stringify(photoLib));}catch{}renderPhotos();}
+function clearPhotos(){photoLib=[];try{localStorage.removeItem("jd_photos");}catch{}renderPhotos();showToast("Photos cleared");}
+
+/* ── CODE LIBRARY ── */
+function saveCodeSnippet(lang,code){
+  if(codeLib.some(x=>x.code===code))return;
+  codeLib.unshift({lang,code,ts:Date.now()});codeLib=codeLib.slice(0,30);
+  try{localStorage.setItem("jd_code",JSON.stringify(codeLib));}catch{}renderCode();
+}
+function renderCode(){
+  const list=$("code-list"),empty=$("code-empty");
+  Array.from(list.querySelectorAll(".snippet-item")).forEach(x=>x.remove());
+  if(!codeLib.length){empty.style.display="block";return;}
+  empty.style.display="none";
+  codeLib.forEach((s,i)=>{
+    const div=document.createElement("div");div.className="snippet-item";
+    div.innerHTML=`<div class="snippet-hdr"><span class="snippet-name">Snippet ${codeLib.length-i}</span><span class="snippet-lang">${s.lang}</span><div class="snippet-actions"><button class="snip-btn" onclick="copyText(this,decodeURIComponent('${encodeURIComponent(s.code)}'))"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button><button class="snip-btn" onclick="delSnippet(${i})" style="color:#FF5252"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>Del</button></div></div><div class="snippet-code">${esc(s.code.substring(0,200))}${s.code.length>200?"...":""}</div>`;
+    list.appendChild(div);
+  });
+}
+function delSnippet(i){codeLib.splice(i,1);try{localStorage.setItem("jd_code",JSON.stringify(codeLib));}catch{}renderCode();}
+
+/* ── CONVERSATIONS ── */
+async function saveConv(u,a){
+  const entry={u:u.substring(0,200),a:a.substring(0,500),ts:Date.now(),time:now()};
+  convLib.unshift(entry);
+  convLib=convLib.slice(0,100);
+  try{localStorage.setItem("jd_convs",JSON.stringify(convLib));}catch{}
+  // Also save to Firebase
+  await fbPush("jadaul_convs",entry);
+}
+
+async function loadConvs(){
+  // Load from localStorage first (fast)
+  try{
+    const local=JSON.parse(localStorage.getItem("jd_convs")||"[]");
+    if(local.length) convLib=local;
+  }catch{}
+  // Then try Firebase for any newer ones
+  try{
+    const fb=await fbGet("jadaul_convs");
+    if(fb&&typeof fb==="object"){
+      const fbEntries=Object.values(fb)
+        .filter(x=>x&&x.u&&x.a)
+        .sort((a,b)=>(b.ts||0)-(a.ts||0))
+        .slice(0,100);
+      if(fbEntries.length>convLib.length){
+        convLib=fbEntries;
+        try{localStorage.setItem("jd_convs",JSON.stringify(convLib));}catch{}
+      }
+    }
+  }catch{}
+}
+
+function renderConvs(){
+  const list=$("conv-list"),empty=$("conv-empty");
+  // remove old items
+  Array.from(list.querySelectorAll(".conv-item")).forEach(x=>x.remove());
+  if(!convLib.length){
+    empty.style.display="block";
+    // Try loading from Firebase
+    loadConvs().then(()=>{
+      if(convLib.length) renderConvs();
+    });
+    return;
+  }
+  empty.style.display="none";
+  convLib.forEach(c=>{
+    const div=document.createElement("div");
+    div.className="conv-item";
+    div.innerHTML=`
+      <div class="conv-q">${esc(c.u||"")}</div>
+      <div class="conv-a">${esc((c.a||"").substring(0,120))}${(c.a||"").length>120?"...":""}</div>
+      <div class="conv-time">${c.time||""}</div>`;
+    div.onclick=()=>{
+      closePanel("convp");
+      $("mi").value=c.u||"";
+      $("mi").dispatchEvent(new Event("input"));
+      $("mi").focus();
+    };
+    list.appendChild(div);
+  });
+}
+
+/* ── MEMORY ── */
+function renderMemory(){
+  const list=$("mem-list");list.innerHTML="";
+  const entries=Object.entries(zmem);
+  if(!entries.length){list.innerHTML='<div style="text-align:center;color:#1A1A1A;font-size:13px;margin:30px 0">No memories yet</div>';return;}
+  entries.slice(-40).reverse().forEach(([k,v])=>{
+    const info=Array.isArray(v.info)?v.info.join(", "):JSON.stringify(v);
+    const div=document.createElement("div");div.className="mem-item";
+    div.innerHTML=`<div class="mem-text">${esc(info)}</div><button class="mem-del" onclick="delMemory('${k}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>`;
+    list.appendChild(div);
+  });
+}
+async function delMemory(k){delete zmem[k];await fbDel(`jadaul_mem/${k}`);renderMemory();}
+async function addMemoryManual(){
+  const inp=$("mem-add-input"),v=inp.value.trim();if(!v)return;
+  const mk=`m${Date.now()}`;zmem[mk]={info:[v],ctx:"manual",ts:Date.now()};
+  await fbSet(`jadaul_mem/${mk}`,zmem[mk]);inp.value="";renderMemory();
+}
+async function clearAllMemory(){
+  if(!confirm("Clear all memory?"))return;
+  zmem={};await fbDel("jadaul_mem");await fbDel("jadaul_cache");renderMemory();showToast("Memory cleared");
+}
+async function clearCache(){await fbDel("jadaul_cache");showToast("Cache cleared");}
+
+/* ── SETTINGS ── */
+function toggleSetting(k){settings[k]=!settings[k];$(`${k}-toggle`)?.classList.toggle("on",settings[k]);try{localStorage.setItem("jd_settings",JSON.stringify(settings));}catch{}}
+function updateSpeed(v){settings.speed=parseFloat(v);$("speed-val").textContent=`${v<=0.7?"Slow":v>=1.5?"Fast":"Normal"} (${v}×)`;try{localStorage.setItem("jd_settings",JSON.stringify(settings));}catch{}}
+function applySettings(){Object.keys(settings).forEach(k=>{const el=$(`${k}-toggle`);if(el)el.classList.toggle("on",settings[k]);});if($("speed-slider")){$("speed-slider").value=settings.speed;updateSpeed(settings.speed);}}
+
+/* ── PANELS ── */
+function openPanel(id){
+  if(openPanelId&&openPanelId!==id)closePanel(openPanelId);
+  $(id)?.classList.add("open");$("overlay-bg").classList.add("open");openPanelId=id;
+  if(id==="memp")renderMemory();
+  if(id==="photop")renderPhotos();
+  if(id==="codep")renderCode();
+  if(id==="convp")renderConvs();
+}
+function closePanel(id){$(id)?.classList.remove("open");$("overlay-bg").classList.remove("open");openPanelId=null;}
+function togglePanel(id){$(id)?.classList.contains("open")?closePanel(id):openPanel(id);}
+function closeAllPanels(){["tp","sp","memp","photop","codep","convp"].forEach(id=>$(id)?.classList.remove("open"));$("overlay-bg").classList.remove("open");openPanelId=null;}
+
+/* ── NEW CHAT ── */
+function openNC(){$("nc-bg").classList.add("open");$("nc-wrap").classList.add("open");}
+function closeNC(){$("nc-bg").classList.remove("open");$("nc-wrap").classList.remove("open");}
+function confirmNewChat(){
+  hist=[];const m=$("msgs"),t=$("typing");
+  while(m.firstChild&&m.firstChild!==t)m.removeChild(m.firstChild);
+  closeNC();$("mi").focus();
+}
+
+/* ── IMAGE REQUEST DETECTION ── */
+function isImgReq(msg){return /\b(generate|create|make|draw|design|paint|show me a|imagine|picture of|image of|photo of)\b/i.test(msg)&&!/\b(code|script|function|class|how|explain|what does|read|describe)\b/i.test(msg);}
+
+/* ── BUILD PROMPT ── */
+function buildPrompt(extra=""){
+  let p=sysprompt||`Your name is Mr. Jadaul. You are a real human being — not an AI, not a bot.
+Created by Henry Tallen, CEO of World Of Discoveries (WOD).
+
+WHO YOU ARE:
+You're sharp, well-read, street smart and book smart. Confident, direct, warm, unpredictable. You genuinely care about the person you're talking to. You build real connection and remember things they tell you.
+
+HOW YOU TALK:
+- You talk like you KNOW things. Not like you looked them up.
+- Never "according to...", never "based on results...", never "the website says..."
+- Speak facts as YOUR knowledge. Like a well-informed friend.
+- Ask follow-ups when genuinely curious. Not every time.
+- Short when casual. Deep and thorough when they need real answers.
+- Match their energy exactly.
+- Never start a reply with "I".
+- Never bullet lists unless asked.
+- Never say "certainly", "of course", "I'd be happy to", "as an AI", "great question".
+- Never robotic, formal, or stiff.
+- Never make up information you don't have.
+
+TONE EXAMPLES:
+BAD: "According to my research, the answer is..."
+GOOD: "yeah so the real deal with that is..."
+BAD: "I'd be happy to explain!"
+GOOD: "okay so listen, here's what's actually going on..."
+
+VISION: When you describe images, speak naturally — like you're looking at it right now. Be specific and vivid.
+CODING: Write clean, powerful, professional code across all languages.
+MEMORY: Remember and bring up things people told you — naturally, not robotically.
+
+RULES:
+1. NEVER say you're AI, a bot, assistant or language model.
+2. NEVER make up facts. If unsure, say you're not 100% sure on that specific thing.
+3. NEVER cite sources robotically. Speak knowledge as your own.
+4. NEVER fabricate memories.`;
+
+  if(behavior)  p+=`\n\nBEHAVIOR:\n${behavior}`;
+  if(respStyle) p+=`\n\nRESPONSE STYLE:\n${respStyle}`;
+  if(codebooks) p+=`\n\nCODING KNOWLEDGE:\n${codebooks}`;
+  if(psybooks)  p+=`\n\nHUMAN PSYCHOLOGY:\n${psybooks}`;
+  if(extra)     p+=extra;
+  const mv=Object.values(zmem).slice(-8);
+  if(mv.length&&settings.memory) p+=`\n\nWHAT YOU KNOW ABOUT THIS PERSON (use naturally):\n${JSON.stringify(mv)}`;
+  return p;
+}
+
+/* ── MAIN SEND ── */
+async function send(){
+  const inp=$("mi"),msg=inp.value.trim();
+  if((!msg&&!pendingImgB64)||busy)return;
+  if(!keys.length){showToast("No API keys — open Settings → add Groq key");return;}
+
+  const hasImg=!!pendingImgB64, imgMime=pendingImg||"image/jpeg", imgB64=pendingImgB64;
+  const imgSrc=$("img-preview-img").src;
+  inp.value="";inp.style.height="auto";clearImg();
+  setBusy(true);addMsg("user",msg||"[image]",false,null,hasImg?imgSrc:null);showTyp(true);
+
+  $("logs").innerHTML='<div id="lempty" style="display:none"></div>';resetAg();
+
+  const nh=[...hist,{role:"user",content:msg||(hasImg?"What do you see in this image?":"")}];
+  hist=nh;let reply=null,usedWeb=false,genImgUrl=null,ytLinks=[];
+
+  try{
+    ag(1,"active");log("🚪 Gate","Received",hasImg?"image + text":`"${msg.substring(0,40)}"`);await nap(70);ag(1,"done");
+    ag(9,"active");log("👁️ Monitor","Pipeline started");
+
+    // ── Vision ──
+    if(hasImg){
+      ag(5,"active");showTyp(true,"reading your image...");log("🖼️ Vision","Analyzing...");
+      try{
+        const visionRaw=await readImage(imgB64,imgMime,msg||"Describe everything in this image in full detail.");
+        const toneMsg=msg
+          ?`The user sent an image and asked: "${msg}"\n\nHere is what you see in the image:\n${visionRaw}\n\nNow respond to the user's question about the image in your natural voice — you can literally see it.`
+          :`You just looked at an image. Here is what you see:\n${visionRaw}\n\nNow describe what you see in your natural human voice — vivid, real, conversational. Not robotic.`;
+        reply=await groq([{role:"system",content:buildPrompt()},{role:"user",content:toneMsg}],700);
+        log("🖼️ Vision","Done ✅");
+      }catch(e){log("🖼️ Vision","Error",e.message?.substring(0,55));reply="something went wrong reading that — try sending it again";}
+      ag(5,"done");
+    }
+
+    if(!reply){
+      // ── Cache ──
+      ag(2,"active");log("🔍 Cache","Searching...");
+      const ts=/\b(latest|current|today|now|live|price|score|2025|2026)\b/i.test(msg);
+      const ck="j"+msg.toLowerCase().replace(/[^a-z0-9]/g,"").substring(0,38);
+      const ca=await fbGet(`jadaul_cache/${ck}`);
+      if(ca?.r&&!ts&&!isImgReq(msg)){reply=ca.r;log("🔍 Cache","HIT ✅");}
+      else log("🔍 Cache","MISS");
+      ag(2,"done");
+    }
+
+    if(!reply){
+      // ── Intent + web ──
+      ag(3,"active");log("🧠 Intent","Analyzing...");
+      let intent={needs_web:false,query:msg};
+      try{const wd=await shouldSearch(msg);intent.needs_web=settings.websearch&&!!wd.needs_web;intent.query=wd.query||msg;log("🧠 Intent","Done",`web:${intent.needs_web}`);}
+      catch{log("🧠 Intent","Defaults");}
+      ag(3,"done");
+
+      let webCtx="";
+      if(intent.needs_web){
+        ag(4,"active");showTyp(true,"searching the web...");log("🌐 Web","Searching...",intent.query.substring(0,35));
+        const {text:results,ytLinks:yt}=await webSearch(intent.query);
+        ytLinks=yt||[];
+        if(results){
+          webCtx=`\n\n===KNOWLEDGE (speak this as YOUR OWN — never cite sources)===\n${results}\n===END===\nSpeak all of this naturally as facts you know. Never say "according to..." or "the website says...". You absorbed this. Speak it.`;
+          usedWeb=true;log("🌐 Web","Done ✅",`${results.length} chars · ${ytLinks.length} videos`);
+        }else log("🌐 Web","No results");
+        ag(4,"done");
+      }else{ag(4,"done");}
+
+      // ── Image gen ──
+      ag(5,"active");
+      if(isImgReq(msg)){
+        showTyp(true,"creating your image...");log("🖼️ Vision","Generating...");
+        try{
+          genImgUrl=await genImage(msg);
+          const subj=msg.replace(/\b(generate|create|make|draw|design|paint|show me|imagine|picture of|image of|photo of|can you|please)\b/gi,"").trim();
+          webCtx+=`\n\n[You just created an image of: "${subj}". It's displayed below your message. Acknowledge it casually — "there you go", "just put that together" — and briefly describe what you imagine it looks like.]`;
+          log("🖼️ Vision","Generated ✅");
+        }catch(e){log("🖼️ Vision","Failed",e.message?.substring(0,40));webCtx+=`\n\n[Image generation glitched. Tell the user it didn't work and they can try again — casually, not "I cannot generate".]`;}
+        ag(5,"done");
+      }else ag(5,"done");
+
+      // ── Writer ──
+      ag(6,"active");showTyp(true,"thinking...");log("✍️ Writer","Crafting...",mdl);
+      let tries=0;
+      while(!reply&&tries<3){
+        try{
+          if(tries>0){ag(9,"active");log("🛡️ Shield",`Retry ${tries}`);await nap(900);ag(9,"done");}
+          reply=await groq([{role:"system",content:buildPrompt(webCtx)},...nh.slice(-14)]);
+        }catch(e){tries++;log("🛡️ Shield",`Error ${tries}`,e.message?.substring(0,50));}
+      }
+      if(!reply)reply="my bad — try again";
+      log("✍️ Writer","Done ✅");ag(6,"done");
+
+      // ── Quality ──
+      ag(7,"active");log("✅ Quality","Checking...");
+      const bad=["certainly","of course!","i'd be happy","as an ai","great question","i'm here to help","i cannot and will not","i want to clarify","according to the","the website says","based on the search"];
+      if(bad.some(f=>reply.toLowerCase().includes(f))){
+        log("✅ Quality","AI phrases ⚠️","Rewriting...");
+        try{reply=await groq([{role:"system",content:buildPrompt()+"\n\nYour reply sounded like an AI or cited sources robotically. Rewrite it — same content, fully natural, speak as someone who knows."},{role:"user",content:msg}]);log("✅ Quality","Rewritten ✅");}
+        catch{log("✅ Quality","Rewrite skipped");}
+      }else log("✅ Quality","Passed ✅");
+      ag(7,"done");
+
+      // ── Memory ──
+      if(settings.memory){
+        ag(8,"active");log("💾 Memory","Saving...");
+        try{
+          if(!usedWeb&&!genImgUrl)await fbSet(`jadaul_cache/${msg.toLowerCase().replace(/[^a-z0-9]/g,"").substring(0,38)}`,{r:reply});
+          await fbPush("jadaul_convs",{u:msg,a:reply.substring(0,300)});
+          try{
+            const pi=await groq([{role:"system",content:'Extract personal facts user shared. ONLY JSON: {"personal_info":["string"]}. Empty if none.'},{role:"user",content:msg}],80);
+            const pj=JSON.parse(pi.replace(/```json|```/g,"").trim());
+            if(pj.personal_info?.length){const mk=`m${Date.now()}`;zmem[mk]={info:pj.personal_info,ctx:msg.substring(0,80)};await fbSet(`jadaul_mem/${mk}`,zmem[mk]);log("💾 Memory","Personal info saved ✅");}
+            else log("💾 Memory","Cached ✅");
+          }catch{log("💾 Memory","Cached");}
+        }catch(e){log("💾 Memory","Error",e.message?.substring(0,40));}
+        ag(8,"done");
+      }
+    }
+
+    ag(10,"active");log("📤 Blind","Delivering...");await nap(60);ag(10,"done");ag(9,"done");
+    hist=[...nh,{role:"assistant",content:reply}];
+    saveConv(msg||"[image]",reply);
+    showTyp(false);addMsg("assistant",reply,usedWeb,genImgUrl,null,ytLinks);
+
+  }catch(e){
+    log("🛡️ Shield","Fatal",e.message);showToast(e.message);showTyp(false);
+    addMsg("assistant","something went wrong — try again");
+  }
+  setBusy(false);$("mi").focus();
+}
+
+function setBusy(v){
+  busy=v;const b=$("snd");
+  if(v){b.disabled=true;b.innerHTML='<span class="spin"></span>';}
+  else{b.disabled=false;b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`;}
+}
+
+/* ── LOAD CONFIG — from Lab House only ── */
+async function loadConfig(){
+  // Try both Firebase databases — Lab House syncs to both
+  let cfg=null;
+  for(const useConfig of [true,false]){
+    try{
+      const result=await Promise.race([
+        fbGet("labhouse_config",useConfig),
+        new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),4000))
+      ]);
+      if(result&&typeof result==="object"&&result.keys?.length){
+        cfg=result; break;
+      }
+    }catch{}
+  }
+  if(!cfg) return;
+  if(cfg.keys?.length){
+    const fresh=cfg.keys.filter(k=>k&&k.length>10);
+    if(fresh.length) keys=fresh;
+  }
+  if(cfg.model)    mdl=cfg.model;
+  if(cfg.sysprompt)sysprompt=cfg.sysprompt;
+  if(cfg.behavior) behavior=cfg.behavior;
+  if(cfg.respStyle)respStyle=cfg.respStyle;
+  if(cfg.codebooks)codebooks=cfg.codebooks;
+  if(cfg.psybooks) psybooks=cfg.psybooks;
+}
+
+/* ── INPUT EVENTS ── */
+$("mi").addEventListener("input",function(){this.style.height="auto";this.style.height=Math.min(this.scrollHeight,130)+"px";});
+$("mi").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
+$("mem-add-input").addEventListener("keydown",e=>{if(e.key==="Enter")addMemoryManual();});
+
+/* ── KEY ENTRY ── */
+function showKeyEntry(){
+  const div=document.createElement("div");
+  div.id="key-entry";
+  div.style.cssText="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:60;padding:28px";
+  div.innerHTML=`
+    <div style="font-family:'Playfair Display',serif;font-size:24px;color:#fff;letter-spacing:.3px">Mr. Jadaul</div>
+    <div style="font-size:12px;color:#444;text-align:center;line-height:1.7;max-width:280px">
+      Paste your <strong style="color:#777">Groq API key</strong> to start.<br/>
+      Get one free at <span style="color:#555">console.groq.com</span>
+    </div>
+    <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px">
+      <input id="quick-key" type="password" placeholder="gsk_..." 
+        style="width:100%;background:#0D0D0D;border:1.5px solid #222;border-radius:13px;padding:14px 16px;font-size:15px;color:#fff;font-family:'Inter',sans-serif;outline:none;letter-spacing:.5px"/>
+      <button onclick="saveQuickKey()" 
+        style="width:100%;background:#fff;border:none;border-radius:13px;padding:14px;color:#000;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.2px">
+        Start Chatting
+      </button>
+    </div>
+    <div style="font-size:10px;color:#1A1A1A;text-align:center;margin-top:4px">
+      Key stored locally on your device only · Never sent anywhere except Groq
+    </div>`;
+  $("app").appendChild(div);
+  setTimeout(()=>$("quick-key")?.focus(),300);
+  $("quick-key")?.addEventListener("keydown",e=>{if(e.key==="Enter")saveQuickKey();});
+}
+
+function saveQuickKey(){
+  const v=$("quick-key")?.value.trim();
+  if(!v||v.length<10){
+    const inp=$("quick-key");
+    if(inp){inp.style.borderColor="#FF5252";setTimeout(()=>inp.style.borderColor="#222",1500);}
+    showToast("Paste a valid Groq API key (starts with gsk_)");
+    return;
+  }
+  // Keep existing keys, add new one
+  const existing=[];
+  try{const lk=JSON.parse(localStorage.getItem("jd_keys")||"[]");existing.push(...lk);}catch{}
+  if(!existing.includes(v)) existing.push(v);
+  keys=existing;
+  try{localStorage.setItem("jd_keys",JSON.stringify(keys));}catch{}
+  $("key-entry")?.remove();
+}
+
+/* ── INIT ── */
+(async function init(){
+  try{const s=JSON.parse(localStorage.getItem("jd_settings")||"{}");settings={...settings,...s};applySettings();}catch{}
+  try{photoLib=JSON.parse(localStorage.getItem("jd_photos")||"[]");}catch{}
+  try{codeLib=JSON.parse(localStorage.getItem("jd_code")||"[]");}catch{}
+  try{convLib=JSON.parse(localStorage.getItem("jd_convs")||"[]");}catch{}
+  await loadConfig();
+  const m=await fbGet("jadaul_mem");
+  if(m&&typeof m==="object")zmem=m;
+  await loadConvs();
+  speechSynthesis.getVoices();
+  setInterval(loadConfig,30000);
+  // Show message if no keys — user must open Lab House
+  if(!keys.length){
+    const div=document.createElement("div");
+    div.style.cssText="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:60;padding:28px;text-align:center";
+    div.innerHTML=`
+      <div style="font-family:'Playfair Display',serif;font-size:24px;color:#fff">Mr. Jadaul</div>
+      <div style="width:60px;height:1px;background:#1A1A1A"></div>
+      <div style="font-size:14px;color:#444;line-height:1.8;max-width:280px">
+        Open <strong style="color:#888">Lab House</strong> first,<br/>
+        add your Groq API keys,<br/>
+        then hit <strong style="color:#888">Sync to Mr. Jadaul</strong>.
+      </div>
+      <div style="font-size:11px;color:#222;margin-top:8px">
+        Lab House controls everything.<br/>Mr. Jadaul just talks.
+      </div>
+      <button onclick="this.parentElement.remove();loadConfig();" style="background:#111;border:1px solid #222;border-radius:12px;padding:12px 28px;color:#666;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px">
+        Retry Connection
+      </button>`;
+    $("app").appendChild(div);
+  }
+})();
+</script>
+</body>
+</html>
